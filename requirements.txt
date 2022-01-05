@@ -1,0 +1,4 @@
+boxx
+colour_demosaicing
+pidng
+rawpy
