@@ -154,12 +154,12 @@ class DngFileformat:
     def test():
         import tempfile
 
-        dngp = tempfile.gettempdir() + "/raw.dng"
+        dngp = tempfile.gettempdir() + "/raw-12bit-GBRG.dng"
         if not os.path.isfile(dngp):
-            print("Download test raw.dng to:", dngp)
-            os.system(
-                f"wget https://github.com/yl-data/yl-data.github.io/raw/master/2201.process_raw/raw.dng -O {dngp}"
-            )
+            print("!!!Download test raw.dng to:", dngp)
+            cmd = f"wget https://github.com/yl-data/yl-data.github.io/raw/master/2201.process_raw/raw-12bit-GBRG.dng -O {dngp}"
+            print(cmd)
+            assert not os.system(cmd)
 
         dng = DngFileformat.read_dng(dngp)
         raw = dng.raw
