@@ -84,9 +84,9 @@ class RawToRgbUint8:
         boxx.g()
 
 
-class DngFileformat:
+class DngFile:
     @staticmethod
-    def save_dng(dng_path, raw, bit=12, pattern="GBRG", compress=False, Orientation=1):
+    def save(dng_path, raw, bit=12, pattern="GBRG", compress=False, Orientation=1):
         try:
             from pidng.core import RAW2DNG, DNGTags, Tag
         except ModuleNotFoundError as e:
@@ -122,7 +122,7 @@ class DngFileformat:
         # compress = True lossless for bayer, 29MB => 19 MB
 
     @staticmethod
-    def read_dng(dng_path):
+    def read(dng_path):
         import rawpy
 
         class RawPy_(rawpy.RawPy):
@@ -161,25 +161,28 @@ class DngFileformat:
             print(cmd)
             assert not os.system(cmd)
 
-        dng = DngFileformat.read_dng(dngp)
+        dng = DngFile.read(dngp)
         raw = dng.raw
 
         with boxx.timeit("dng.postprocess(demosaicing by rawpy)"):
             rgb1 = dng.postprocess()
-        with boxx.timeit("dng.demosaicing with poww"):
+        with boxx.timeit("dng.demosaicing with gamma correction"):
             rgb2 = dng.demosaicing(poww=0.3)
         boxx.tree(dict(raw=raw, rgb1=rgb1, rgb2=rgb2))
 
-        DngFileformat.save_dng(
-            dngp + "-save.dng", raw, bit=dng.bit, pattern=dng.pattern
-        )
+        DngFile.save(dngp + "-save.dng", raw, bit=dng.bit, pattern=dng.pattern)
         boxx.g()
         return raw
 
+    read_dng = read
+    save_dng = save
+
+
+DngFileformat = DngFile
 
 if __name__ == "__main__":
     from boxx import *
 
-    raw = DngFileformat.test()
+    raw = DngFile.test()
     print("--------RawToRgbUint8.test--------")
     RawToRgbUint8.test(raw)

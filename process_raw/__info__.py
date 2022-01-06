@@ -1,4 +1,4 @@
-__version__ = "0.1.1"
+__version__ = "0.1.2"
 __description__ = "process_raw"
 __license__ = "MIT"
 __author__ = "DIYer22"
