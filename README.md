@@ -11,6 +11,13 @@
 ```bash
 pip install process_raw 
 ```
+
+**Run demo:**
+```bash
+python -m process_raw.process_raw
+```
+For document, please see example code of `DngFile.test()` at [`process_raw/process_raw.py`](process_raw/process_raw.py#L154)
+
 **Python example:**
 ```Python
 import cv2
@@ -27,15 +34,8 @@ rgb2 = dng.demosaicing(poww=0.3)  # demosaicing with gamma correction
 cv2.imwrite("rgb2.jpg", rgb2[:, :, ::-1])
 DngFile.save(dng_path + "-save.dng", dng.raw, bit=dng.bit, pattern=dng.pattern)
 ```
-
-**Run demo:**
-```bash
-python -m process_raw.process_raw
-```
-For document, please see example code of `DngFile.test()` at [`process_raw/process_raw.py`](process_raw/process_raw.py#L154)
-
 ## Credits
 Source referenced from:
-- [rawpy](https://github.com/letmaik/rawpy): for read `.dng` file
-- [PiDNG](https://github.com/schoolpost/PiDNG): for save raw as `.dng` file
+- [rawpy](https://github.com/letmaik/rawpy): For read `.dng` file
+- [PiDNG](https://github.com/schoolpost/PiDNG): For save raw as `.dng` file
 - [colour_demosaicing](https://github.com/colour-science/colour-demosaicing): Provide demosaicing algorithms
