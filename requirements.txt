@@ -1,4 +1,4 @@
 boxx
 colour_demosaicing
-pidng
+pidng>=4.0.9
 rawpy

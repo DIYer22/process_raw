@@ -78,8 +78,13 @@ class RawToRgbUint8:
             rgb2 = RawToRgbUint8()(raw)
         with boxx.timeit("demosaicing_method: Malvar2004 pow 0.3"):
             rgb3 = RawToRgbUint8(poww=0.3)(raw)
-        imgs = boxx.tree / [boxx.norma(raw), rgb1, rgb2, rgb3]
-
+        imgs = {
+            "normalized_raw": boxx.norma(raw),
+            "demosaicing_method: simple": rgb1,
+            "demosaicing_method: Malvar2004": rgb2,
+            "demosaicing_method: Malvar2004 pow 0.3": rgb3,
+        }
+        boxx.tree(imgs)
         boxx.shows(imgs, png=True)
         boxx.g()
 
@@ -112,12 +117,13 @@ class DngFile:
         t.set(Tag.PreviewColorSpace, 2)
         t.set(Tag.Orientation, Orientation)
 
-        RAW2DNG().convert(
-            raw,
-            tags=t,
-            filename=boxx.filename(dng_path),
-            path=boxx.dirname(dng_path) + "/",
-            compress=compress,
+        raw2dng = RAW2DNG()
+
+        raw2dng.options(
+            tags=t, path=boxx.dirname(dng_path) + "/", compress=compress,
+        )
+        raw2dng.convert(
+            raw, filename=boxx.filename(dng_path),
         )
         # compress = True lossless for bayer, 29MB => 19 MB
 
@@ -159,7 +165,10 @@ class DngFile:
             print("!!!Download test raw.dng to:", dngp)
             cmd = f"wget https://github.com/yl-data/yl-data.github.io/raw/master/2201.process_raw/raw-12bit-GBRG.dng -O {dngp}"
             print(cmd)
-            assert not os.system(cmd)
+            return_code = os.system(cmd)
+            if not return_code and os.path.exists(dngp):
+                os.remove(dngp)
+            assert not return_code, f'Run cmd fail: "{cmd}"'
 
         dng = DngFile.read(dngp)
         raw = dng.raw

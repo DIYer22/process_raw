@@ -28,6 +28,10 @@ from process_raw import DngFile
 dng_path = "./raw-12bit-GBRG.dng"
 
 dng = DngFile.read(dng_path)
+raw = dng.raw  # np.uint16
+raw_8bit = np.uint8(raw >> (dng.bit-8))
+cv2.imwrite("raw_8bit.png", raw_8bit)
+
 rgb1 = dng.postprocess()  # demosaicing by rawpy
 cv2.imwrite("rgb1.jpg", rgb1[:, :, ::-1])
 rgb2 = dng.demosaicing(poww=0.3)  # demosaicing with gamma correction
