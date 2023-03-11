@@ -21,6 +21,7 @@ For document, please see example code of `DngFile.test()` at [`process_raw/proce
 **Python example:**
 ```Python
 import cv2
+import numpy as np
 from process_raw import DngFile
 
 # Download raw.dng for test:

@@ -58,15 +58,30 @@ class RawToRgbUint8:
         )
 
     @staticmethod
-    def simple_demosaicing(raw, pattern=None):
-        return np.concatenate(
-            [
-                raw[1::2, ::2, None],
-                (raw[::2, ::2, None] / 2 + raw[::2, ::2, None] / 2).astype(raw.dtype),
-                raw[::2, 1::2, None],
-            ],
+    def simple_demosaicing(raw, pattern):
+        """
+        Perform a simple demosaicing of a raw image by merage four pixels to one pixel.
+
+        Args:
+            raw (ndarray): A 2D numpy array representing a single-channel raw image.
+            pattern (str): A string indicating the Bayer pattern of the raw image, which can be "RGGB", "BGGR", "GBRG", or "GRBG".
+
+        Returns:
+            ndarray: (h/2, w/2, 3) RGB image obtained by averaging
+            the values of each color channel in the raw image according to the Bayer pattern.
+        """
+
+        d = {}
+        for color, channel in zip(pattern, [raw[::2, ::2, None], raw[::2, 1::2, None], raw[1::2, ::2, None], raw[1::2, 1::2, None]]):
+            d[color] = d.get(color, []) + [channel]
+        
+
+        RGB = np.concatenate(
+            [np.mean(d[color], 0) for color in "RGB"]
+            ,
             -1,
         )
+        return RGB
 
     @staticmethod
     def test(raw=None):
@@ -86,7 +101,7 @@ class RawToRgbUint8:
         }
         boxx.tree(imgs)
         boxx.shows(imgs, png=True)
-        boxx.g()
+        boxx.g()  # make all locals() to Python console for debug
 
 
 class DngFile:
@@ -180,7 +195,7 @@ class DngFile:
         boxx.tree(dict(raw=raw, rgb1=rgb1, rgb2=rgb2))
 
         DngFile.save(dngp + "-save.dng", raw, bit=dng.bit, pattern=dng.pattern)
-        boxx.g()
+        boxx.g()  # make all locals() to Python console for debug
         return raw
 
     read_dng = read

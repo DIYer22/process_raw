@@ -1,4 +1,4 @@
-__version__ = "0.2.0"
+__version__ = "0.2.1"
 __description__ = "A python package to process raw and dng file, supporting demosaicing with gamma correction."
 __license__ = "MIT"
 __author__ = "DIYer22"
