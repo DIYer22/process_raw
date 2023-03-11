@@ -16,7 +16,9 @@ pip install process_raw
 ```bash
 python -m process_raw.process_raw
 ```
-For document, please see example code of `DngFile.test()` at [`process_raw/process_raw.py`](process_raw/process_raw.py#L154)
+Then, the browser will automatically open a visual web page, like [demo.html](https://yl-data.github.io/2201.process_raw/raw_simple_Malvar2004_pow0.3/)
+
+For document, please see example code of `DngFile.test()` at [`process_raw/process_raw.py`](process_raw/process_raw.py#L186)
 
 **Python example:**
 ```Python
