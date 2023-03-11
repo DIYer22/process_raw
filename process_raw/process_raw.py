@@ -192,7 +192,7 @@ class DngFile:
             cmd = f"wget https://github.com/yl-data/yl-data.github.io/raw/master/2201.process_raw/raw-12bit-GBRG.dng -O {dngp}"
             print(cmd)
             return_code = os.system(cmd)
-            if not return_code and os.path.exists(dngp):
+            if return_code and os.path.exists(dngp):
                 os.remove(dngp)
             assert not return_code, f'Run cmd fail: "{cmd}"'
 
