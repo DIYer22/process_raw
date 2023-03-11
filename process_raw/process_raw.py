@@ -13,12 +13,12 @@ class RawToRgbUint8:
         self.pattern = pattern
 
     def __call__(self, raw):
-        norma_raw = raw / 2 ** self.bit
+        norma_raw = raw / 2**self.bit
 
         pow_func = self.pow_func_for_uint8()
         norma_raw = pow_func(norma_raw)
 
-        rgb = (self.demosaicing(norma_raw)).clip(0, 1 - 1 / 2 ** self.bit)
+        rgb = (self.demosaicing(norma_raw)).clip(0, 1 - 1 / 2**self.bit)
         rgb = np.uint8(rgb * 256)
         return rgb
 
@@ -36,11 +36,13 @@ class RawToRgbUint8:
         rgb = demosaicing_func(raw, self.pattern)
         return rgb
 
-    def pow_func_for_uint8(self,):
+    def pow_func_for_uint8(
+        self,
+    ):
         """
         pow 改进
         改进的动机: 充分利用 uint8 来容纳细节, 即使 1/2^12 的亮度值在映射后不会超过 1/2^8
-        
+
         return funcation that supoort both int and float
         """
         poww = self.poww
@@ -49,10 +51,10 @@ class RawToRgbUint8:
             return lambda raw: raw
 
         x0 = (2 ** (bit - 8) / poww) ** (1 / (poww - 1))  # where_dx_equl_scale
-        y0 = x0 ** poww
+        y0 = x0**poww
         remap = lambda raw: (((raw) * (1 - x0) + x0) ** poww - y0) / (1 - y0)
         return (
-            lambda raw: np.uint8(remap(raw / 2 ** bit) * 256)
+            lambda raw: np.uint8(remap(raw / 2**bit) * 256)
             if np.issubdtype(raw.dtype, np.integer)
             else remap(raw)
         )
@@ -72,13 +74,19 @@ class RawToRgbUint8:
         """
 
         d = {}
-        for color, channel in zip(pattern, [raw[::2, ::2, None], raw[::2, 1::2, None], raw[1::2, ::2, None], raw[1::2, 1::2, None]]):
+        for color, channel in zip(
+            pattern,
+            [
+                raw[::2, ::2, None],
+                raw[::2, 1::2, None],
+                raw[1::2, ::2, None],
+                raw[1::2, 1::2, None],
+            ],
+        ):
             d[color] = d.get(color, []) + [channel]
-        
 
         RGB = np.concatenate(
-            [np.mean(d[color], 0) for color in "RGB"]
-            ,
+            [np.mean(d[color], 0) for color in "RGB"],
             -1,
         )
         return RGB
@@ -135,10 +143,13 @@ class DngFile:
         raw2dng = RAW2DNG()
 
         raw2dng.options(
-            tags=t, path=boxx.dirname(dng_path) + "/", compress=compress,
+            tags=t,
+            path=boxx.dirname(dng_path) + "/",
+            compress=compress,
         )
         raw2dng.convert(
-            raw, filename=boxx.filename(dng_path),
+            raw,
+            filename=boxx.filename(dng_path),
         )
         # compress = True lossless for bayer, 29MB => 19 MB
 
